@@ -1,0 +1,45 @@
+---
+title: "pertussis graph"
+output: html
+---
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+library (leaflet)
+ pertussis <- county |> filter (Disease == 'Pertussis')
+pertussis_tot <- pertussis |> group_by(County)|>
+  summarise(Total_Cases =sum(Count, na.rm=TRUE)) |>
+  ungroup()
+
+pertussis <- county |> filter (Disease == 'Pertussis')
+
+ #Stratify Pertussis, Check Los Angeles Trend
+pertussis_la <- pertussis |> 
+  filter(County == 'Los Angeles')
+library(dplyr)
+
+# Aggregate total cases by year
+annual_cases <- pertussis_la |>
+  group_by(Year) |>
+  summarise(Total_Cases = sum(Count, na.rm = TRUE))
+
+library(ggplot2)
+
+library(plotly)
+
+# Line plot using ggplot
+p <- ggplot(annual_cases, aes(x = Year, y = Total_Cases)) +
+  geom_line(color = "plum", size = 1.5) +
+  geom_point(color = "plum", size = 3) +
+  labs(title = "Trend of Pertussis Cases in Los Angeles per Year",
+       x = "Year",
+       y = "Total Cases") +
+  theme_minimal()
+
+# Convert ggplot to interactive Plotly chart
+ggplotly(p)
+
+```
+
+
