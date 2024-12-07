@@ -3,3 +3,17 @@ title: "Full Report"
 ---
 
 Please see the full report of my project here. 
+
+References:
+
+[CDC Glossary](https://www.cdc.gov/reproductive-health/glossary/index.html)
+
+[CDPH Dataset: Vaccine Preventable Disease Cases by County and Year](https://data.chhs.ca.gov/dataset/vaccine-preventable-disease-cases-by-county-and-year)
+
+[Health and Human Services: Vaccine Hesitancy Estimates](https://aspe.hhs.gov/reports/vaccine-hesitancy-covid-19-state-county-local-estimates)
+
+[CDC: COVID-19 Vaccine Hesitancy](https://data.cdc.gov/stories/s/Vaccine-Hesitancy-for-COVID-19/cnd2-a6zw)
+
+[Past example of vaccine-preventable disease outbreaks: Measles](https://www.cdc.gov/measles/data-research/index.html#cdc_data_surveillance_section_2-what-to-know-about-measles)
+
+
