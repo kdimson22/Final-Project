@@ -8,6 +8,13 @@ author: "Kendall Dimson"
 
 Welcome to my PM 566 final project website, on the topic: "Analysing Rates and Trends of Vaccine Preventable Diseases in California, by County (2001-2022).
 
+This project uses data from the California Department of Public Health (CDPH) and the Center for Disease Control and Prevention (CDC) to analyse trends of vaccine-preventable diseases in California. Vaccine-preventable diseases, as in the term name, are infectious diseases that can be prevented by vaccines. Common examples include: COVID-19, Whooping Cough (Pertussis), Measles, and Tuberculosis.
+
+There are three main topics covered in this project:
+
+  1. The project focuses on identifying previous vaccine-preventable disease epidemics in California. An epidemic is defined as "the occurrence of more cases of disease than expected in a given area or among a specific group of people over a particular period of time" (CDC).
+  2. After identifying the vaccine-preventable disease with the highest total number of new cases over the years, the project investigated the distribution of the disease across California counties, adjusting for population density. Did the number of new cases vary in different regions? (This is to be explored in the full report)
+  3. One of the main influential factors to the rise of new cases of vaccine-preventable disease is vaccine hesitancy. When regions do not vaccinate, then the community is susceptible to new infections of such vaccine-preventable cases. This project investigates if there is an association between vaccine hesitancy and new cases.
 
 
 
