@@ -2,6 +2,17 @@
 title: "Final Project: PM 566"
 subtitle: "University of Southern California, Fall 2024"
 author: "Kendall Dimson"
+format: html
 ---
 
 Welcome to my PM 566 final project website, on the topic: "Analysing Rates and Trends of Vaccine Preventable Diseases in California, by County (2001-2022)
+
+## Description
+
+### Table 1
+
+### Figure 1
+
+### Figure 2
+
+### Figure 3
