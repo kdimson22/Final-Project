@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+plotly-latest.min.js
 
 /.quarto/
