@@ -2,7 +2,7 @@
 title: "Full Report"
 ---
 
-Please see the full report of my project here. 
+Please see the full report of my project [here](https://github.com/kdimson22/Final-Project/blob/main/docs/full-report.pdf). 
 
 References:
 
