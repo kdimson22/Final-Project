@@ -274,6 +274,10 @@ p <- ggplot(annual_cases, aes(x = Year, y = Total_Cases)) +
   theme_minimal()
 
 # Convert ggplot to interactive Plotly chart
+
+```
+
+```{r}
 ggplotly(p)
 ```
 

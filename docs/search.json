@@ -81,6 +81,6 @@
     "href": "index.html#figure-2-trends-of-pertussis-incidence-in-los-angeles-2001-2022",
     "title": "Final Project: PM 566",
     "section": "Figure 2: Trends of Pertussis Incidence in Los Angeles (2001-2022)",
-    "text": "Figure 2: Trends of Pertussis Incidence in Los Angeles (2001-2022)"
+    "text": "Figure 2: Trends of Pertussis Incidence in Los Angeles (2001-2022)\n\nggplotly(p)"
   }
 ]
