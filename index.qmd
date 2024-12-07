@@ -275,6 +275,7 @@ ggplot(annual_cases, aes(x = Year, y = Total_Cases)) +
 ```
 In Figure 2, we investigated the trend of Pertussis cases in Los Angeles each year, the county who had the most cumulative incidence for Pertussis. It was found that Los Angeles county had peaks of case incidence in 2010, 2014, and 2019. After 2020 there was a lower decline of Pertussis cases, but this is likely due to the occurrence of the COVID-19 pandemic.
 
+## Figure 3: Invasive Menginococcal Cases in Kern County, by Year
 ```{r,echo=FALSE, message=FALSE, warning=FALSE}
   #Stratify IMD, Check LA Trend
 IMD <- county |> filter (Disease == 'Invasive Meningococcal Disease')
@@ -283,7 +284,7 @@ IMD_kern <- IMD |>
 
 ggplot(IMD_kern, aes(x = Year, y = Count)) +
   geom_bar(stat = "identity", fill = "plum") +
-  labs(title = "Figure 3: Invasive Menginococcal Cases in Kern County, by Year",
+  labs(title = "",
        x = "Year",
        y = "Number of Cases") +
   theme_minimal() 
