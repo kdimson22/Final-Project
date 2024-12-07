@@ -2,39 +2,30 @@
 title: "PM 566 Final Project: Analysing Vaccine Preventable Diseases and Vaccine Hesitancy in California"
 subtitle: University of Southern California, Fall 2024
 author: "Kendall Dimson"
-format: html
+format: pdf
 embed-resources: TRUE
 ---
 
 ## Introduction
+Long since the rollout of the polio vaccine, there have been a variety of vaccines created in the 1900s to present-day that have been influential in the epidemiological shift, with vaccine efficiency as one of the main modes of primary prevention in infectious disease epidemiology. However, despite continuous efforts to vaccinate, many Vaccine-Preventable diseases are prevalent to this day that threaten the public health system. As a result, in the modern era there have been several vaccine-preventable epidemics that have occurred. According to the Center for Disease Control and Prevention, epidemics are defined as the occurrence of more cases of disease than expected in a given area or among a specific group of people over a particular period of time. There are various factors that can influence the occurrence of these epidemics, including vaccination rates and vaccine hesitancy. This project serves to conduct a comprehensive exploratory analysis into vaccine-preventable diseases in California, with specific focus on fout: Whooping cough (Pertussis), Hepatitis A, Invasive Meningococcal Disease, and COVID-19.
 
-Long since the rollout of the polio vaccine, there have been a variety of vaccines created in the 1900s to present-day that have been influential in the epidemiological shift, with vaccine efficiency as one of the main modes of primary prevention in infectious disease epidemiology. However, despite continuous efforts to vaccinate, many Vaccine-Preventable diseases are prevalent to this day that threaten the public health system. As a result, in the modern era there have been several vaccine-preventable epidemics that have occurred. According to the Center for Disease Control and Prevention, epidemics are defined as the occurrence of more cases of disease than expected in a given area or among a specific group of people over a particular period of time. There are various factors that can influence the occurrence of these epidemics, including vaccination rates and vaccine hesitancy. 
+Various research questions include:
 
-This project serves to conduct a comprehensive exploratory analysis into vaccine-preventable diseases in California. Various research questions include:
-Where did the previous vaccine-preventable disease epidemics occur in California?
-What is the normalized distribution in each county of Pertussis, also known as whooping cough?
-Is there an association between patterns of vaccine hesitancy and vaccine-preventable disease incidence across counties?
-Is there an association between patterns of childhood immunization rates and vaccine-preventable disease incidence across counties?
+Which county had the highest incidence of Pertussis, and when did the peak of the epidemic(s) occur?
 
+Were there any particular epidemics of Hepatitis A outside of Los Angeles county?
 
+What was the statewide trend for Invasive Meningococcal Disease incidence? Was it the same, or different?
+
+How did COVID-19 era vaccine hesitancy impact California counties? Is there an association between vaccine hesitancy and previous Vaccine-Preventable Disease incidence?
 
 ## Methods
 The dataset, vaccine, was extracted through the California Health and Human Services Agency, with data collected from the California Department of Public Health.  The data includes the variables: ID, Disease (the disease reported), County (the location the disease was reported from), Year (the year that the disease was reported to CDPH), and count (the cumulative number of cases reported of a given disease in a given year, from the specific county). The dataset includes fifteen Disease categories:
 
 Diphtheria, Invasive Meningococcal Disease, Measles, Pertussis, Tetanus, Mumps, Rubella, Hepatitis A, Acute Hepatitis B, Acute Hepatitis C, Varicella Hospitalizations, Varicella Hospitalization/Death, Chronic Hepatitis B, Haemophilus influenzae, Perinatal Hepatitis B, and Rubella (Congenital Syndrome).
-	
-To evaluate vaccine hesitancy in association to vaccine-preventable disease incidence, the dataset “Public Use Microdata Area with estimated COVID-19 vaccine hesitancies” was extracted from the Center of Disease Control and Prevention, based on the Health and Human Services’ Household Pulse Survey conducted from May 26 - June 7, 2021. The measure was based on the survey question, "Once a vaccine to prevent COVID-19 is available to you, would you…get a vaccine?” Options for the survey included:
- 1) “definitely get a vaccine”
-2) “probably get a vaccine”
-3) “unsure”
-4) “probably not get a vaccine”
-5) “definitely not get a vaccine.” 
 
-From there, the dataset measures the percentage of individuals in all U.S. counties that selected “probably not” and “definitely not,” defining vaccine hesitancy. The dataset also includes race/ethnicity percentage distribution in each Public Use Microdata Area. For this project’s analysis, the dataset is stratified to California counties. 
+In the data cleaning and wrangling step, counties that recorded 0 cases of a disease were removed. Variety of subsetted datasets were created, subsetting into “california” and “county” datasets since there are some categories in the “County” variable that have a summation number of diseases in California. For each, the filter() function subset. The kable() function was used to print a table of the total number of vaccine preventable diseases reported in the entirety of the dataset. The arrange() function was used to print the top five vaccine-reportable diseases with highest cumulative incidence, as well as to print the top five counties of each disease. Ggplot barplots were used to visualize trends in incidence counts. To analyze the distribution of pertussis cases by counties, I used the leaflet package to code an interactive bubble map, normalized by population density. To visually analyze vaccine hesitancy association, leaflet heat maps were utilized. In the analysis on Pertussis, the data was stratified to compare annual incidence in each California county. In the analysis on Invasive Meningococcal Disease, the data was stratified to visualize bar graphs. All data was analyzed using R software Version 2024.04.2+764.
 
-In the data cleaning and wrangling step, counties that recorded 0 cases of a disease were removed. Variety of subsetted datasets were created, subsetting into “california” and “county” datasets since there are some categories in the “County” variable that have a summation number of diseases in California. For each, the filter() function subset. The kable() function was used to print a table of the total number of vaccine preventable diseases reported in the entirety of the dataset. The arrange() function was used to print the top five vaccine-reportable diseases with highest cumulative incidence, as well as to print the top five counties of each disease. Ggplot barplots were used to visualize trends in incidence counts. To analyze the distribution of pertussis cases by counties, I used the leaflet package to code an interactive bubble map, normalized by population density. 
-
-To visually analyze vaccine hesitancy association , leaflet heat maps were utilized.
 
 ## Results
 
@@ -42,8 +33,8 @@ To visually analyze vaccine hesitancy association , leaflet heat maps were utili
 
 #Set Up Code
 options(repos = c(CRAN = "https://cran.rstudio.com/"))
-install.packages("knitr")
-install.packages("readr")
+suppressMessages(install.packages("knitr"))
+suppressMessages(install.packages("readr"))
 
 library(knitr)
 library(readr)
@@ -69,15 +60,139 @@ kable(diseases_total,
 ```
 
 There were a total of 72,058 incident vaccine preventable cases recorded. The top five in total cases reported were Pertussis (n=57,219), Hepatitis B, chronic (n=4462) and acute (n=1349), Invasive Meningococcal Disease (n=2718), and Hepatitis A (n=3035).
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+# EDA
 
-## Conclusion and Summary
+#Remove counties that reported 0 cases in a year
+#vaccine <- vaccine |> filter(Count != 0)
 
+#Check count of disease categories in the dataset
+#vaccine |>count(Disease, sort=TRUE)
 
+#Checked for any missing values or irregularities
+#summary(vaccine)
 
+#Total number of cases in dataset, stratify by counties, states overall, and top 5 diseases
+#county <- vaccine |> filter (County != 'California')
+#california <- vaccine |> filter (County == 'California')
 
+#summations, each year
+#table(vaccine$Year)
+#sum(county$Count)
 
-CODEEEEEE
+#dim(county)
+#head(county)
+#tail(county)
+#str(county)
+#summary(county)
+#No issues found in data irregularities. Year and Count variables numeric. Disease & County variables are character class. _id variable is irrelevant in this analysis.}
+#hav <- county |> filter (Disease == 'Hepatitis A') |> filter (County != 'Los Angeles')
+#hav |> arrange(desc(Count))
+```
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ pertussis <- county |> filter (Disease == 'Pertussis')
+
+ #Stratify Pertussis, Check Los Angeles Trend
+pertussis_la <- pertussis |> 
+  filter(County == 'Los Angeles')
+library(dplyr)
+
+# Aggregate total cases by year
+annual_cases <- pertussis_la %>%
+  group_by(Year) %>%
+  summarise(Total_Cases = sum(Count, na.rm = TRUE))
+
+library(ggplot2)
+
+# Line graph for Total Cases per Year
+ggplot(annual_cases, aes(x = Year, y = Total_Cases)) +
+  geom_line(color = "darkgreen", linewidth = 1.5) +
+  geom_point(color = "darkgreen", linewidth = 3) +
+  labs(title = "Figure 1: Trend of Pertussis Cases in Los Angeles per Year",
+       x = "Year",
+       y = "Total Cases") +
+  theme_minimal()
+
+```
+In Figure 1, we investigated the trend of Pertussis cases in Los Angeles each year, the county who had the most cumulative incidence for Pertussis. It was found that Los Angeles county had peaks of case incidence in 2010, 2014, and 2019. After 2020 there was a lower decline of Pertussis cases, but this is likely due to the occurrence of the COVID-19 pandemic.
+
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+library(knitr)
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+  
+hav <- county |> filter (Disease == 'Hepatitis A')
+#Stratify HAV, Check San Diego Trend
+hav_sd <- hav |>  filter(County == 'San Diego')
+
+ggplot(hav_sd, aes(x = Year, y = Count)) +
+  geom_bar(stat = "identity", fill = "red") +
+  labs(title = "Figure 2: Hepatitis A Cases in San Diego County, by Year",
+       x = "Year",
+       y = "Number of Cases") + 
+  scale_x_continuous(breaks = seq(min(hav_sd$Year), max(hav_sd$Year), by = 1)) +
+  theme_minimal() 
+```
+
+In Figure 2, it was identified of a Hepatitis A epidemic in San Diego, which greatly stood out from its trend of lower case incidence in recent years. After further research, it was found that the epidemic lasted only one year due to San Diego county's response efforts in vaccination, distribution of hygeine kits, and education.
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+IMD <- county |> filter (Disease == 'Invasive Meningococcal Disease')
+#Top 5 Counties with Recorded IMD
+#IMD |> arrange(desc(Count)) |> slice_head(n=5)
+
+  #Stratify IMD, Check LA Trend
+IMD_la <- IMD |> 
+  filter(County == 'Los Angeles')
+
+ggplot(IMD_la, aes(x = Year, y = Count)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+  labs(title = "Figure 3: Invasive Menginococcal Cases in Los Angeles County, by Year",
+       x = "Year",
+       y = "Number of Cases") +
+  theme_minimal() 
+```
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+IMD_noLA <- county |> filter (County != 'Los Angeles') |> filter (Disease== "Invasive Meningococcal Disease")
+
+#IMD_noLA|> arrange(desc(Count)) |> slice_head(n=5)
+
+  #Stratify IMD, Check LA Trend
+IMD_sd <- IMD |> 
+  filter(County == 'San Diego')
+
+ggplot(IMD_sd, aes(x = Year, y = Count)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(title = "Figure 4: Invasive Menginococcal Cases in San Diego County, by Year",
+       x = "Year",
+       y = "Number of Cases") +
+  theme_minimal() 
+```
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+  #Stratify IMD, Check LA Trend
+IMD_kern <- IMD |> 
+  filter(County == 'Kern')
+
+ggplot(IMD_kern, aes(x = Year, y = Count)) +
+  geom_bar(stat = "identity", fill = "plum") +
+  labs(title = "Figure 5: Invasive Menginococcal Cases in Kern County, by Year",
+       x = "Year",
+       y = "Number of Cases") +
+  theme_minimal() 
+```
+
+In exploration of Invasive Meningococcal Disease, a rare but serious bacterial infection, it was first found that the highest incidence cases occurred in Los Angeles (Figure 3), which aligns with the notion that Los Angeles has the largest population size. Los Angeles county reveals a negative trend in Invasive Meningococcal Disease over the years, and this trend also is similar in San Diego County (Figure 4). Interestingly, it was found that Kern County had an epidemic of Invasive Meningococcal Disease, following a unimodal epidemic curve peaking in 2008 with over 25 cases (Figure 5). Likewise to Los Angeles and San Diego counties, Kern has also seen a decrease in case incidence in recent years.
+
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
 hesitant <- read_csv("~/Desktop/Vaccine_Hesitancy_for_COVID-19__County_and_local_estimates_20241206.csv")
 
 hesitant <- hesitant |> filter(State=='CALIFORNIA')
@@ -131,9 +246,11 @@ hesitant_data <- hesitant %>%
     Hesitant_or_Unsure_Percentage = `Estimated hesitant or unsure`,
     Fully_Vaccinated_Percentage = `Percent adults fully vaccinated against COVID-19 (as of 6/10/21)`
   )
+
 ```
 
-```{r}
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
 # Graph 1: Top 10 Strongly Hesitant Counties (Horizontal Bar Graph)
 
 top_10_strongly_hesitant <- hesitant |>
@@ -146,7 +263,7 @@ ggplot(top_10_strongly_hesitant, aes(x = `Estimated strongly hesitant`,
   geom_bar(stat = "identity", show.legend = FALSE) + 
   geom_text(aes(label = round(`Estimated strongly hesitant`, 1)), 
             hjust = -0.1, size = 4) +  # Place labels inside bars
-  labs(title = "Figure 1. Top 10 Strongly Hesitant Counties - Vaccine Hesitancy",
+  labs(title = "Figure 6. Top 10 Strongly Hesitant Counties - Vaccine Hesitancy",
        x = "Strongly Hesitant Percentage (%)",
        y = "County") +
   theme_minimal() +
@@ -167,7 +284,7 @@ ggplot(top_10_hesitant, aes(x = `Estimated hesitant`,
   geom_bar(stat = "identity", show.legend = FALSE) +
   geom_text(aes(label = round(`Estimated hesitant`, 1)), 
             hjust = -0.1, size = 4) +  
-  labs(title = "Figure 2. Top 10 Hesitant Counties - Vaccine Hesitancy",
+  labs(title = "Figure 7. Top 10 Hesitant Counties - Vaccine Hesitancy",
        x = "Hesitant Percentage (%)",
        y = "County") +
   theme_minimal() +
@@ -188,7 +305,7 @@ ggplot(top_10_hesitant_unsure, aes(x = `Estimated hesitant or unsure`,
   geom_bar(stat = "identity", show.legend = FALSE) +  
   geom_text(aes(label = round(`Estimated hesitant or unsure`, 1)), 
             hjust = -0.1, size = 4) +  
-  labs(title = "Figure 3. Top 10 Hesitant or Unsure Counties - Vaccine Hesitancy",
+  labs(title = "Figure 8. Top 10 Hesitant or Unsure Counties - Vaccine Hesitancy",
        x = "Hesitant or Unsure Percentage (%)",
        y = "County") +
   theme_minimal() +
@@ -197,120 +314,16 @@ ggplot(top_10_hesitant_unsure, aes(x = `Estimated hesitant or unsure`,
         plot.title = element_text(hjust = 0.5))  # Center title
 
 ```
+Interestingly, in Figures 3, 4 and 5, there was overlap in the California counties that were surveyed with highest percentage of vaccine hesitancy in the state. This included: Siskiyou County, Plumas County, Kings County, and Modoc County as some of the few that stood out in the overlap. However, one of the limitations that was found in this approach is that the percentages of vaccine hesitancy may be too low to capture an appropriate trend nor association. For the survey answer of "strongly hesitant," the highest percentage was in Siskiyou County with 4.7%, which is still a lower percentage. The highest percentage of "hesitant or unsure" in hesitancy was 14% in Kings, Siskiyou, Plumas, Modoc, Lassen, and Del Norte County.
 
-head(heatmap_data_hesitancy)
-summary(heatmap_data_hesitancy$`Estimated hesitant`)
+Additionally, another limitation found was in the skewness in the data. Almost none of the counties in the vaccine hesitancy dataset overlap with the Vaccine Preventable Disease incidence dataset. A possibility for this may have been because the statistics of the vaccine preventable diseases focused more in urban, densely-populated counties in California with higher susceptibility of disease transmission. Whereas, the rates of vaccine hesitancy were grouped in rural, less-densely population regions of California. 
 
-stuf
+## Conclusions and Summary
 
+In conclusion, it was determined that the highest case incidence of Pertussis occurred in Los Angeles county, with peak epidemics occurring in 2010, 2014, and 2019. This is likely due to the population density of Los Angeles county, but it still provided interesting insight of recent trends in the county.
 
+For Invasive Meningococcal Disease, San Diego and Los Angeles counties were the two with most cumulative case incidence, both having a skewwed right distribution of case incidence decreasing. In contrast, in Kern County, a more rural region of California, had a unimodal distribution of Invasive Meningococcal Disease epidemic occuring in 2008, with the epidemic at the tailend.
 
+COVID-19 vaccine hesitancy was explored, visualizing the counties with the highest percentage of hesitancy responses. However, overall California had a lower percentages of vaccine hesitancy, and the research question is not as particularly relevant to vaccine-preventable diseases since the incident infections occur more in densely populated regions. In future studies, it may be interesting to do a cross-comparison of vaccine hesitancy between California and another dense-populated state, comparing rates with other infectious diseases such as Influenza.
 
-```{r}
-
-## Appendix: Code Used for Project
-#This section includes is all of the code I created in data cleaning and data wrangling to compile my report.
-
-#Set Up Code
-options(repos = c(CRAN = "https://cran.rstudio.com/"))
-install.packages("knitr")
-install.packages("readr")
-
-library(knitr)
-library(readr)
-library(dplyr)
-library(ggplot2)
-library(tidyverse)
-
-vaccine <- read_csv("~/Desktop/a7a4d868-f6d2-49c9-8a11-904c69a0e3a0.csv")
-
-#Variables: ID, Disease, County, Year, Count
-
-```
-
-```{r}
-
-# EDA
-
-#Remove counties that reported 0 cases in a year
-vaccine <- vaccine |> filter(Count != 0)
-
-#Check count of disease categories in the dataset
-vaccine |>
-  count(Disease, sort=TRUE)
-
-#Checked for any missing values or irregularities
-#summary(vaccine)
-
-#Total number of cases in dataset, stratify by counties, states overall, and top 5 diseases
-county <- vaccine |> filter (County != 'California')
-california <- vaccine |> filter (County == 'California')
-
-#summations, each year
-#table(vaccine$Year)
-#sum(county$Count)
-
-dim(county)
-head(county)
-tail(county)
-str(county)
-summary(county)
-#No issues found in data irregularities. Year and Count variables numeric. Disease & County variables are character class. _id variable is irrelevant in this analysis.
-
-```
-
-```{r}
-#Print Nice Table of Statistics
-
-diseases_total <- county |> 
- group_by(Disease) |> 
- summarise(Total_Cases = sum(Count, na.rm = TRUE)) |> 
- arrange(desc(Total_Cases)) |> 
- slice_head(n = 15)
-library (knitr)
-kable(diseases_total, 
-      col.names = c("Disease", "Total Cases"), 
-     caption = "Total Cases of Vaccine-Preventable Diseases Reported in California, 2001-2022")
-
-```
-```{r}
- pertussis <- county |> filter (Disease == 'Pertussis')
-
- #Stratify Pertussis, Check Los Angeles Trend
-pertussis_la <- pertussis |> 
-  filter(County == 'Los Angeles')
-library(dplyr)
-
-# Aggregate total cases by year
-annual_cases <- pertussis_la %>%
-  group_by(Year) %>%
-  summarise(Total_Cases = sum(Count, na.rm = TRUE))
-
-library(ggplot2)
-
-# Line graph for Total Cases per Year
-ggplot(annual_cases, aes(x = Year, y = Total_Cases)) +
-  geom_line(color = "darkgreen", size = 1.5) +
-  geom_point(color = "darkgreen", size = 3) +
-  labs(title = "Trend of Pertussis Cases in Los Angeles per Year",
-       x = "Year",
-       y = "Total Cases") +
-  theme_minimal()
-
-
-library(plotly)
-
-# Line plot using ggplot
-p <- ggplot(annual_cases, aes(x = Year, y = Total_Cases)) +
-  geom_line(color = "darkgreen", size = 1.5) +
-  geom_point(color = "darkgreen", size = 3) +
-  labs(title = "Trend of Pertussis Cases in Los Angeles per Year",
-       x = "Year",
-       y = "Total Cases") +
-  theme_minimal()
-
-# Convert ggplot to interactive Plotly chart
-ggplotly(p)
-
-```
-
+How did COVID-19 era vaccine hesitancy impact California counties? Is there an association between vaccine hesitancy and previous Vaccine-Preventable Disease incidence?
