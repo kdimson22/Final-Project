@@ -1,9 +1,5 @@
 ---
-title: "About"
+title: "Full Report"
 ---
 
-this is my about page
-
-```{r}
-1 + 1
-```
+Please see the full report of my project here. 
