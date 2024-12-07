@@ -8,7 +8,7 @@ author: "Kendall Dimson"
 
 Welcome to my PM 566 final project website, on the topic: "Analysing Rates and Trends of Vaccine Preventable Diseases in California, by County (2001-2022).
 
-This project uses data from the California Department of Public Health (CDPH) and the Center for Disease Control and Prevention (CDC) to analyse trends of vaccine-preventable diseases in California. Vaccine-preventable diseases, as in the term name, are infectious diseases that can be prevented by vaccines. Common examples include: COVID-19, Whooping Cough (Pertussis), Measles, and Tuberculosis.
+This project uses data from the California Department of Public Health (CDPH) and the Center for Disease Control and Prevention (CDC) to analyse trends of vaccine-preventable diseases in California. Vaccine-preventable diseases, as in the term name, are infectious diseases that can be prevented by vaccines. This project focused particularly on Pertussis (whooping cough), Invasive Meningococcal Disease, Hepatitis A, and COVID-19.
 
 There are three main topics covered in this project:
 
@@ -247,8 +247,9 @@ leaflet(heatmap_data) |>
 
 ## Figure 2: Trends of Pertussis Incidence in Los Angeles (2001-2022)
 
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-pertussis <- county |> filter (Disease == 'Pertussis')
+ pertussis <- county |> filter (Disease == 'Pertussis')
 
  #Stratify Pertussis, Check Los Angeles Trend
 pertussis_la <- pertussis |> 
@@ -256,28 +257,35 @@ pertussis_la <- pertussis |>
 library(dplyr)
 
 # Aggregate total cases by year
-annual_cases <- pertussis_la |>
-  group_by(Year) |>
+annual_cases <- pertussis_la %>%
+  group_by(Year) %>%
   summarise(Total_Cases = sum(Count, na.rm = TRUE))
 
 library(ggplot2)
 
-library(plotly)
-
-# Line plot using ggplot
-p <- ggplot(annual_cases, aes(x = Year, y = Total_Cases)) +
-  geom_line(color = "plum", size = 1.5) +
-  geom_point(color = "plum", size = 3) +
-  labs(title = "Trend of Pertussis Cases in Los Angeles per Year",
+# Line graph for Total Cases per Year
+ggplot(annual_cases, aes(x = Year, y = Total_Cases)) +
+  geom_line(color = "darkgreen", linewidth = 1.5) +
+  geom_point(color = "darkgreen", linewidth = 3) +
+  labs(title = "Figure 2. Trend of Pertussis Cases in Los Angeles per Year",
        x = "Year",
        y = "Total Cases") +
   theme_minimal()
 
-# Convert ggplot to interactive Plotly chart
-
 ```
+In Figure 2, we investigated the trend of Pertussis cases in Los Angeles each year, the county who had the most cumulative incidence for Pertussis. It was found that Los Angeles county had peaks of case incidence in 2010, 2014, and 2019. After 2020 there was a lower decline of Pertussis cases, but this is likely due to the occurrence of the COVID-19 pandemic.
 
-```{r}
-ggplotly(p)
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+  #Stratify IMD, Check LA Trend
+IMD <- county |> filter (Disease == 'Invasive Meningococcal Disease')
+IMD_kern <- IMD |> 
+  filter(County == 'Kern')
+
+ggplot(IMD_kern, aes(x = Year, y = Count)) +
+  geom_bar(stat = "identity", fill = "plum") +
+  labs(title = "Figure 3: Invasive Menginococcal Cases in Kern County, by Year",
+       x = "Year",
+       y = "Number of Cases") +
+  theme_minimal() 
 ```
-
+In Figure 3, one of the interesting findings was that there was an Invasive Meningococcal Disease epidemic that occurred in Kern County, a rural region in Central California. The spread of new cases does not follow the trend of new cases that occurred in Los Angeles County and San Diego county (futher explored in full report).
