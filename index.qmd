@@ -16,12 +16,264 @@ There are three main topics covered in this project:
   2. After identifying the vaccine-preventable disease with the highest total number of new cases over the years, the project investigated the distribution of the disease across California counties, adjusting for population density. Did the number of new cases vary in different regions? (This is to be explored in the full report)
   3. One of the main influential factors to the rise of new cases of vaccine-preventable disease is vaccine hesitancy. When regions do not have a high percentage of people vaccinated, then the community is susceptible to new infections of such vaccine-preventable cases. An example is with Measles, a highly infectious disease that can be prevented with the MMR vaccine. In recent years, regions throughout the U.S. have seen outbreaks of measle cases in regions with a lower vaccination rate. This project investigates if there is an association between vaccine hesitancy and new cases of vaccine-preventable diseases in California counties.
 
+## Table 1: Total Cases of Vaccine-Preventable Diseases Reported in California, 2001-2022
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+vaccine <- read_csv("~/Desktop/a7a4d868-f6d2-49c9-8a11-904c69a0e3a0.csv")
+county <- vaccine |> filter (County != 'California')
+diseases_total <- county |> 
+  group_by(Disease) |> 
+  summarise(Total_Cases = sum(Count, na.rm = TRUE)) |> 
+  arrange(desc(Total_Cases)) |> 
+  slice_head(n = 15)
 
-### Table 1
+kable(diseases_total, 
+      col.names = c("Disease", "Total Cases"))
+```
+
+## Figure 1: Bubble Map of Total Number of Pertussis cases in California (2001-2022)
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#Preliminary Analysis #2: Is there a geographical relationship between location and case incidence? 
+#HeatMap of Pertussis
+library (leaflet)
+ pertussis <- county |> filter (Disease == 'Pertussis')
+pertussis_tot <- pertussis |> group_by(County)|>
+  summarise(Total_Cases =sum(Count, na.rm=TRUE)) |>
+  ungroup()
+
+county_coordinates <- data.frame(
+  County = c(
+    "Alameda", 
+    "Alpine", 
+    "Amador", 
+    "Butte", 
+    "Calaveras", 
+    "Colusa", 
+    "Contra Costa", 
+    "Del Norte", 
+    "El Dorado", 
+    "Fresno", 
+    "Glenn", 
+    "Humboldt", 
+    "Imperial", 
+    "Inyo", 
+    "Kern", 
+    "Kings", 
+    "Lake", 
+    "Lassen", 
+    "Los Angeles", 
+    "Marin", 
+    "Mariposa", 
+    "Mendocino", 
+    "Merced", 
+    "Modoc", 
+    "Mono", 
+    "Monterey", 
+    "Napa", 
+    "Nevada", 
+    "Orange", 
+    "Placer", 
+    "Plumas", 
+    "Riverside", 
+    "Sacramento", 
+    "San Benito", 
+    "San Bernardino", 
+    "San Diego", 
+    "San Francisco", 
+    "San Joaquin", 
+    "San Luis Obispo", 
+    "San Mateo", 
+    "Santa Barbara", 
+    "Santa Clara", 
+    "Santa Cruz", 
+    "Shasta", 
+    "Sierra", 
+    "Siskiyou", 
+    "Solano", 
+    "Sonoma", 
+    "Stanislaus", 
+    "Sutter", 
+    "Tehama", 
+    "Trinity", 
+    "Tulare", 
+    "Tuolumne", 
+    "Ventura", 
+    "Yolo", 
+    "Yuba"
+  ),
+  lat = c(
+    37.6010,  # Alameda
+    38.3652,  # Alpine
+    38.3970,  # Amador
+    39.4739,  # Butte
+    38.2009,  # Calaveras
+    39.2068,  # Colusa
+    38.0016,  # Contra Costa
+    41.7469,  # Del Norte
+    38.7420,  # El Dorado
+    36.7470,  # Fresno
+    39.5051,  # Glenn
+    40.6765,  # Humboldt
+    32.6654,  # Imperial
+    36.5784,  # Inyo
+    35.4875,  # Kern
+    36.0945,  # Kings
+    38.9682,  # Lake
+    40.5832,  # Lassen
+    34.0522,  # Los Angeles
+    38.0449,  # Marin
+    37.4875,  # Mariposa
+    39.4502,  # Mendocino
+    37.3020,  # Merced
+    41.5572,  # Modoc
+    37.9500,  # Mono
+    36.6777,  # Monterey
+    38.2975,  # Napa
+    39.2199,  # Nevada
+    33.7175,  # Orange
+    39.0910,  # Placer
+    39.9724,  # Plumas
+    33.9533,  # Riverside
+    38.5816,  # Sacramento
+    36.5772,  # San Benito
+    34.1083,  # San Bernardino
+    32.7157,  # San Diego
+    37.7749,  # San Francisco
+    37.9563,  # San Joaquin
+    35.3733,  # San Luis Obispo
+    37.5631,  # San Mateo
+    34.4208,  # Santa Barbara
+    37.3541,  # Santa Clara
+    36.9741,  # Santa Cruz
+    40.7906,  # Shasta
+    39.5272,  # Sierra
+    41.4936,  # Siskiyou
+    38.2494,  # Solano
+    38.5004,  # Sonoma
+    37.4959,  # Stanislaus
+    39.0194,  # Sutter
+    40.0982,  # Tehama
+    40.6542,  # Trinity
+    36.1400,  # Tulare
+    38.0291,  # Tuolumne
+    34.3705,  # Ventura
+    38.7647,  # Yolo
+    39.1345   # Yuba
+  ),
+  lon = c(
+    -122.2727,  # Alameda
+    -119.8489,  # Alpine
+    -120.6080,  # Amador
+    -121.8076,  # Butte
+    -120.5606,  # Calaveras
+    -122.0015,  # Colusa
+    -121.8058,  # Contra Costa
+    -124.1018,  # Del Norte
+    -120.5351,  # El Dorado
+    -119.7724,  # Fresno
+    -122.1740,  # Glenn
+    -124.1958,  # Humboldt
+    -115.3746,  # Imperial
+    -116.2028,  # Inyo
+    -118.8597,  # Kern
+    -119.8817,  # Kings
+    -122.8008,  # Lake
+    -120.6548,  # Lassen
+    -118.2437,  # Los Angeles
+    -122.5156,  # Marin
+    -119.9309,  # Mariposa
+    -123.8060,  # Mendocino
+    -120.4844,  # Merced
+    -120.5420,  # Modoc
+    -118.9560,  # Mono
+    -121.6555,  # Monterey
+    -122.2869,  # Napa
+    -120.5734,  # Nevada
+    -117.8310,  # Orange
+    -120.8055,  # Placer
+    -120.4841,  # Plumas
+    -117.3962,  # Riverside
+    -121.4944,  # Sacramento
+    -121.5025,  # San Benito
+    -116.5810,  # San Bernardino
+    -117.1611,  # San Diego
+    -122.4194,  # San Francisco
+    -121.3134,  # San Joaquin
+    -120.6544,  # San Luis Obispo
+    -122.3710,  # San Mateo
+    -119.6982,  # Santa Barbara
+    -121.9552,  # Santa Clara
+    -121.9552,  # Santa Cruz
+    -122.4640,  # Shasta
+    -119.5890,  # Sierra
+    -122.4540,  # Siskiyou
+    -122.0364,  # Solano
+    -122.4064,  # Sonoma
+    -120.8450,  # Stanislaus
+    -121.6656,  # Sutter
+    -122.4300,  # Tehama
+    -123.1382,  # Trinity
+    -118.8597,  # Tulare
+    -120.2370,  # Tuolumne
+    -119.1396,  # Ventura
+    -121.9018,  # Yolo
+    -121.5885   # Yuba
+  )
+)
 
 
-### Figure 1
+heatmap_data <- pertussis_tot|>
+  left_join(county_coordinates, by = "County")
 
-### Figure 2
+leaflet(heatmap_data) |>
+  addTiles() |>
+  addCircleMarkers(
+    lng = ~lon,
+    lat = ~lat,
+    weight = 1,
+    radius = ~sqrt(Total_Cases) * 0.5,
+    color = "green",
+    fillOpacity = 0.5,
+    popup = ~paste(County, ": ", Total_Cases, " cases")
+  ) |>
+  setView(lng = -119.4179, lat = 36.7783, zoom = 6) 
 
-### Figure 3
+```
+
+## Figure 2: Trends of Pertussis Incidence in Los Angeles (2001-2022)
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+pertussis <- county |> filter (Disease == 'Pertussis')
+
+ #Stratify Pertussis, Check Los Angeles Trend
+pertussis_la <- pertussis |> 
+  filter(County == 'Los Angeles')
+library(dplyr)
+
+# Aggregate total cases by year
+annual_cases <- pertussis_la |>
+  group_by(Year) |>
+  summarise(Total_Cases = sum(Count, na.rm = TRUE))
+
+library(ggplot2)
+
+library(plotly)
+
+# Line plot using ggplot
+p <- ggplot(annual_cases, aes(x = Year, y = Total_Cases)) +
+  geom_line(color = "plum", size = 1.5) +
+  geom_point(color = "plum", size = 3) +
+  labs(title = "Trend of Pertussis Cases in Los Angeles per Year",
+       x = "Year",
+       y = "Total Cases") +
+  theme_minimal()
+
+# Convert ggplot to interactive Plotly chart
+ggplotly(p)
+```
+
